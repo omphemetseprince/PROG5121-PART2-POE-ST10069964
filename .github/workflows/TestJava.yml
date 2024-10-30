@@ -1,0 +1,43 @@
+name: Test Java Workflow
+
+# Trigger workflow on push or pull request events to main or any other branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    # Specifies that the job will run on the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Java
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11' # or '17' depending on project's requirements
+
+      # Step 3: Cache dependencies to speed up workflow
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Step 4: Build the project with Gradle
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      # Step 5: Run tests
+      - name: Run tests
+        run: ./gradlew test
