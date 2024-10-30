@@ -1,4 +1,4 @@
-name: Java CI Workflow
+name: Test Java Workflow
 
 # Trigger workflow on push or pull request events to main or any other branch
 on:
